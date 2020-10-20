@@ -4,9 +4,9 @@ from setuptools import setup
 setup(
     name='onlykey-agent',
     version='1.2.0',
-    description='Using onlykey as hardware SSH/GPG agent',
+    description='Using OnlyKey as hardware SSH/GPG agent',
     author='CryptoTrust',
-    author_email='t@crp.to',
+    author_email='admin@crp.to',
     url='http://github.com/trustcrypto/onlykey-agent',
     scripts=['onlykey_agent.py'],
     install_requires=[
@@ -16,7 +16,7 @@ setup(
     platforms=['POSIX'],
     classifiers=[
         'Environment :: Console',
-        'Development Status :: 4 - Beta',
+        'Development Status :: 5 - Production/Stable',
         'Intended Audience :: Developers',
         'Intended Audience :: Information Technology',
         'Intended Audience :: System Administrators',

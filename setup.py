@@ -2,12 +2,12 @@
 from setuptools import setup
 
 setup(
-    name='libagent',
+    name='lib-agent',
     version='0.14.2',
-    description='Using hardware wallets as SSH/GPG agent',
-    author='Roman Zeyde',
-    author_email='roman.zeyde@gmail.com',
-    url='http://github.com/romanz/trezor-agent',
+    description='Using OnlyKey and hardware wallets as SSH/GPG agent',
+    author='CryptoTrust',
+    author_email='admin@crp.to',
+    url='http://github.com/onlykey/onlykey-agent',
     packages=[
         'libagent',
         'libagent.device',

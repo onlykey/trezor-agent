@@ -73,7 +73,7 @@ def create_agent_parser(device_type):
 
     agent_package = device_type.package_name()
     resources_map = {r.key: r for r in pkg_resources.require(agent_package)}
-    resources = [resources_map[agent_package], resources_map['libagent']]
+    resources = [resources_map[agent_package], resources_map['lib-agent']]
     versions = '\n'.join('{}={}'.format(r.key, r.version) for r in resources)
     p.add_argument('--version', help='print the version info',
                    action='version', version=versions)
