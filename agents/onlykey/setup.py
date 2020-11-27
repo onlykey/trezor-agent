@@ -11,7 +11,7 @@ setup(
     scripts=['onlykey_agent.py'],
     install_requires=[
         'lib-agent>=1.0.1',
-        'onlykey>=1.2.0'
+        'onlykey>=1.2.3'
     ],
     platforms=['POSIX'],
     classifiers=[
