@@ -152,6 +152,9 @@ def run_init(device_type, args):
 
     # Prepare GPG agent invocation script (to pass the PATH from environment).
     if device_type.package_name() == 'onlykey-agent':
+        if args.import_pub != None:
+            with args.import_pub as f:
+                device_type.import_pub(device_type, f.read())
         with open(os.path.join(homedir, 'run-agent.sh'), 'w') as f:
             f.write(r"""#!/bin/sh
     export PATH="{0}"
