@@ -20,6 +20,12 @@ import time
 
 import pkg_resources
 import semver
+import Crypto.Hash
+import Crypto.PublicKey
+import Crypto.Signature
+from Crypto.Signature import pkcs1_15
+from Crypto.Hash import SHA256, SHA512
+from Crypto.PublicKey import RSA
 
 
 from . import agent, client, encode, keyring, protocol
@@ -36,6 +42,10 @@ def export_public_key(device_type, args):
     c = client.Client(device=device_type())
     identity = client.create_identity(user_id=args.user_id,
                                       curve_name=args.ecdsa_curve)
+    if device_type.package_name() == 'onlykey-agent':
+        if hasattr(device_type, 'import_pubkey'):
+            return device_type.import_pubkey
+    
     verifying_key = c.pubkey(identity=identity, ecdh=False)
     decryption_key = c.pubkey(identity=identity, ecdh=True)
     signer_func = functools.partial(c.sign, identity=identity)
@@ -321,6 +331,9 @@ def main(device_type):
         p.add_argument('-dk', '--dkey', type=int, metavar='DECRYPT_KEY',
                        default=132,
                        help='specify key to use for decryption')
+        p.add_argument('-i', '--import-pub', type=argparse.FileType('r'), metavar='IMPORT_PUBLIC_KEY',
+                       default=None,
+                       help='import existing OpenPGP public key to use (Load private using OnlyKey App)')
         p.add_argument('-t', '--time', type=int, default=0)
 
         p.add_argument('--homedir', type=str, default=os.environ.get('GNUPGHOME'),

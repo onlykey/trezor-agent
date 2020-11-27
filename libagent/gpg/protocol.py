@@ -192,16 +192,19 @@ class PublicKey:
     def __init__(self, curve_name, created, verifying_key, ecdh=False):
         """Contruct using a ECDSA VerifyingKey object."""
         self.curve_name = curve_name
-        self.curve_info = SUPPORTED_CURVES[curve_name]
+        if curve_name != 'rsa':
+            self.curve_info = SUPPORTED_CURVES[curve_name]
+            self.ecdh = bool(ecdh)
+            if ecdh:
+                self.algo_id = ECDH_ALGO_ID
+                self.ecdh_packet = b'\x03\x01\x08\x07'
+            else:
+                self.algo_id = self.curve_info['algo_id']
+                self.ecdh_packet = b''
+        else:
+            self.algo_id = 1 # RSA (Encrypt or Sign) (0x1)
         self.created = int(created)  # time since Epoch
         self.verifying_key = verifying_key
-        self.ecdh = bool(ecdh)
-        if ecdh:
-            self.algo_id = ECDH_ALGO_ID
-            self.ecdh_packet = b'\x03\x01\x08\x07'
-        else:
-            self.algo_id = self.curve_info['algo_id']
-            self.ecdh_packet = b''
 
     def keygrip(self):
         """Compute GPG keygrip of the verifying key."""
@@ -213,9 +216,14 @@ class PublicKey:
                              4,             # version
                              self.created,  # creation
                              self.algo_id)  # public key algorithm ID
-        oid = util.prefix_len('>B', self.curve_info['oid'])
-        blob = self.curve_info['serialize'](self.verifying_key)
-        return header + oid + blob + self.ecdh_packet
+        if self.algo_id != 1: # ECC
+            oid = util.prefix_len('>B', self.curve_info['oid'])
+            blob = self.curve_info['serialize'](self.verifying_key)
+            return header + oid + blob + self.ecdh_packet
+        #else: # RSA
+            #TODO Implement RSA GPG 
+            #blob = util.bytes2num(self.verifying_key))
+            #return header + blob
 
     def data_to_hash(self):
         """Data for digest computation."""

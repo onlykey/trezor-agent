@@ -3,8 +3,8 @@ from setuptools import setup
 
 setup(
     name='lib-agent',
-    version='0.14.2',
-    description='Using OnlyKey and hardware wallets as SSH/GPG agent',
+    version='1.0.1',
+    description='Using OnlyKey as hardware SSH and GPG agent',
     author='CryptoTrust',
     author_email='admin@crp.to',
     url='http://github.com/onlykey/onlykey-agent',
@@ -22,6 +22,7 @@ setup(
         'python-daemon>=2.1.2',
         'ecdsa>=0.13',
         'pynacl>=1.4.0',
+        'pycryptodome>=3.9.8',
         'mnemonic>=0.18',
         'pymsgbox>=1.0.6',
         'semver>=2.2',
@@ -30,7 +31,7 @@ setup(
     platforms=['POSIX'],
     classifiers=[
         'Environment :: Console',
-        'Development Status :: 4 - Beta',
+        'Development Status :: 5 - Production/Stable',
         'Intended Audience :: Developers',
         'Intended Audience :: Information Technology',
         'Intended Audience :: System Administrators',

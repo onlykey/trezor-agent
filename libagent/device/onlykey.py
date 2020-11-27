@@ -187,6 +187,7 @@ class OnlyKey(interface.Device):
                     raise interface.DeviceError(e)
 
             log.info('received= %s', repr(ok_pubkey))
+            log.info(len(ok_pubkey))
             if len(ok_pubkey) == 256:
                 # https://security.stackexchange.com/questions/42268/how-do-i-get-the-rsa-bit-length-with-the-pubkey-and-openssl
                 ok_pubkey = b'\x00\x00\x00\x07' + b'\x73\x73\x68\x2d\x72\x73\x61' + \
@@ -256,15 +257,21 @@ class OnlyKey(interface.Device):
                 log.info('Key type secp256k1')
             # Send data and identity hash
             raw_message = blob + data
-        else:
+        elif curve_name != 'rsa':
             this_slot_id = self.skeyslot
             # Send just data to sign
             raw_message = blob
+        else:
+            this_slot_id = self.skeyslot
+            # Send just hash
+            raw_message = data
+        
         h2 = hashlib.sha256()
         h2.update(raw_message)
         d = h2.digest()
         assert len(d) == 32
         b1, b2, b3 = get_button(self, d[0]), get_button(self, d[15]), get_button(self, d[31])
+
         log.info('Key Slot =%s', this_slot_id)
         print('Enter the 3 digit challenge code on OnlyKey to authorize '+identity.to_string())
         print('{} {} {}'.format(b1, b2, b3))
@@ -288,7 +295,7 @@ class OnlyKey(interface.Device):
                 self.ok.close()
                 return bytes(result)
         else:
-            self.ok.send_large_message2(msg=self._defs.Message.OKSIGN, payload=data,
+            self.ok.send_large_message2(msg=self._defs.Message.OKSIGN, payload=raw_message,
                                         slot_id=this_slot_id)
             result = []
             while time.time() < t_end:

@@ -127,8 +127,9 @@ class Handler:
         key = formats.parse_pubkey(util.read_frame(buf))
         log.debug('looking for %s', key['fingerprint'])
         blob = util.read_frame(buf)
-        assert util.read_frame(buf) == b''
-        assert not buf.read()
+        if (key['type'] != b'ssh-rsa'):
+            assert util.read_frame(buf) == b''
+            assert not buf.read()
 
         for k in self.conn.parse_public_keys():
             if (k['fingerprint']) == (key['fingerprint']):
@@ -155,6 +156,12 @@ class Handler:
 
         log.debug('signature size: %d bytes', len(sig_bytes))
 
-        data = util.frame(util.frame(key['type']), util.frame(sig_bytes))
+        if (key['type'] == b'ssh-rsa'):
+            if b'rsa-sha2-512' in blob:
+                data = util.frame(util.frame(b'rsa-sha2-512'), util.frame(sig_bytes))
+            else:
+                data = util.frame(util.frame(b'rsa-sha2-256'), util.frame(sig_bytes))
+        else:
+            data = util.frame(util.frame(key['type']), util.frame(sig_bytes))
         code = util.pack('B', msg_code('SSH2_AGENT_SIGN_RESPONSE'))
         return util.frame(code, data)
