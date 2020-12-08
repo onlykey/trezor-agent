@@ -45,7 +45,7 @@ def export_public_key(device_type, args):
     if device_type.package_name() == 'onlykey-agent':
         if hasattr(device_type, 'import_pubkey'):
             return device_type.import_pubkey
-    
+
     verifying_key = c.pubkey(identity=identity, ecdh=False)
     decryption_key = c.pubkey(identity=identity, ecdh=True)
     signer_func = functools.partial(c.sign, identity=identity)
@@ -125,9 +125,6 @@ def write_file(path, data):
 def run_init(device_type, args):
     """Initialize hardware-based GnuPG identity."""
     util.setup_logging(verbosity=args.verbose)
-    log.warning('This GPG tool is still in EXPERIMENTAL mode, '
-                'so please note that the API and features may '
-                'change without backwards compatibility!')
 
     verify_gpg_version()
 
