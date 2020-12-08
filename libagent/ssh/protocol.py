@@ -150,7 +150,7 @@ class Handler:
         try:
             sig_bytes = key['verifier'](sig=signature, msg=blob)
             log.info('signature status: OK')
-        except formats.ecdsa.BadSignatureError:
+        except formats.ecdsa.BadSignatureError as e:
             log.exception('signature status: ERROR')
             raise ValueError('invalid signature')
 

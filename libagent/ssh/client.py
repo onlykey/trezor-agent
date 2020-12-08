@@ -20,7 +20,7 @@ class Client:
 
     def export_public_keys(self, identities):
         """Export SSH public keys from the device."""
-        public_keys = []
+        pubkeys = []
         with self.device:
             for i in identities:
                 if self.device.package_name() == 'onlykey-agent':
